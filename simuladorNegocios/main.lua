@@ -95,6 +95,14 @@ function rodarConfiguracao()
 
 end
 
+-- 1. criar estrutura que mostre a quantidade agrupada por:tempo, agressor, valor
+--    essa  eh a ordem original
+-- 2. criar estrutura que mostre os 10 maiores vendedores e compradores e sua quantidade de lotes
+-- 3. criar estrutura que mostre as quantidades acumuladas nos 7 preços, para baixo e pra cima
+--    do preço corrente
+-- 4. criar tela que exiba o grafico candles simplificado : *, v, c - conforme outro servico do 
+--    broker
+
 function rodarJogo()
     local b = tostring(socket.gettime())
     local ss, ml = string.match(b,'(%d+).(%d%d)')
