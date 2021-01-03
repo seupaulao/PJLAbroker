@@ -121,8 +121,59 @@ function telaConfiguracao()
    love.graphics.print("Hora    Inicio: "..tostring(hini),100,180)
    love.graphics.print("Minuto  Inicio: "..tostring(mini),100,240)
 end
+-- TODO alteracoes:
 
-function telaCenario()
+function telaDOM()
+    -- 3. criar estrutura que mostre as quantidades acumuladas em cada nivel de preco
+    -- barra de precos
+    -- preco atual ao background laranja
+    -- quantidades de compra acumulados por preco do lado esquerdo    
+    -- quantidades de vendas acumulados por preco do lado direito    
+
+    --colocar controles de compra e venda a mercado
+    --colocar controles de compra e venda a melhor preço (bid e ask)
+    --colocar controles de zerar e inverter
+    --colocar controles de lotes
+    --colocar controle de alternar entre WDO e DOL
+
+end
+
+function telaIndicadores()
+    -- maximo
+    -- minimo
+    -- abertura
+    -- fechamento
+    -- vwap
+    -- preco medio
+end
+
+function telaCandles()
+    -- 4. criar tela que exiba o grafico candles simplificado : *, v, c - conforme outro servico do broker (imprimirAltaBaixa.lua)
+    
+end
+
+function telaPosicaoAtual()
+    -- separar a tela de resultado / posicao da configuracao
+    --       1.  em pontos
+    --       2.  quantide de operacoes
+    --       3.  em valor
+end
+
+function telaPrincipaisAgressores()
+    -- 2. criar estrutura que mostre os 10 maiores vendedores e compradores e sua quantidade de lotes
+    --    Se estiver comprando fica com valores positivos e verdes
+    --    Se estiver vendendo  fica com valores negativos e vermelhos   
+    --    Logo um lado estara verde e o outro vermelho
+    
+end
+
+function telaNegociosOrdemOriginal()
+    -- 1. criar estrutura que mostre a quantidade agrupada por:tempo, agressor, valor : essa  eh a ordem original
+    
+end
+
+function telaNegocios()
+    --tela de cenario atual (apenas os negocios sem filtro)
     local x = 490
     local y = 425
     local c = 1

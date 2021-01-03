@@ -33,7 +33,6 @@ function love.load()
     carregarRecursos()
 end
 
-
 --A FAZER
     --8. carregar mais historicos de negocio de outros dias
 
@@ -95,13 +94,6 @@ function rodarConfiguracao()
 
 end
 
--- 1. criar estrutura que mostre a quantidade agrupada por:tempo, agressor, valor
---    essa  eh a ordem original
--- 2. criar estrutura que mostre os 10 maiores vendedores e compradores e sua quantidade de lotes
--- 3. criar estrutura que mostre as quantidades acumuladas nos 7 preços, para baixo e pra cima
---    do preço corrente
--- 4. criar tela que exiba o grafico candles simplificado : *, v, c - conforme outro servico do 
---    broker
 
 function rodarJogo()
     local b = tostring(socket.gettime())
@@ -115,31 +107,42 @@ function rodarJogo()
         lista = puxarSaida(teste)
     end
     
+    agruparNegocioOO(lista)
+
     if lista ~= nil then
             for i,v in ipairs(lista) do                 
                 iUltimo = iUltimo + 1
                 
                 if tonumber(v.negocio)==1 then
-                saida[iUltimo]= espacos(formataHora(v.data),12)..espacos(v.qte,6)..espacos(v.preco,10)..espacos(getNomeCorretora(v.idc),7)..espacos("-",7)..v.negocio
+                    saida[iUltimo]= espacos(formataHora(v.data),12)..espacos(v.qte,6)..espacos(v.preco,10)..espacos(getNomeCorretora(v.idc),7)..espacos("-",7)..v.negocio
                 elseif tonumber(v.negocio)==2 then 
-                saida[iUltimo]= espacos(formataHora(v.data),12)..espacos(v.qte,6)..espacos(v.preco,10)..espacos("-",7)..espacos(getNomeCorretora(v.idv),7)..v.negocio
+                    saida[iUltimo]= espacos(formataHora(v.data),12)..espacos(v.qte,6)..espacos(v.preco,10)..espacos("-",7)..espacos(getNomeCorretora(v.idv),7)..v.negocio
                 else
-                saida[iUltimo]= espacos(formataHora(v.data),12)..espacos(v.qte,6)..espacos(v.preco,10)..espacos(getNomeCorretora(v.idc),7)..espacos(getNomeCorretora(v.idv),7)..v.negocio
+                    saida[iUltimo]= espacos(formataHora(v.data),12)..espacos(v.qte,6)..espacos(v.preco,10)..espacos(getNomeCorretora(v.idc),7)..espacos(getNomeCorretora(v.idv),7)..v.negocio
                 end
-
+                
                 precocorrente[iUltimo]=tonumber(v.preco)
+
                 if iUltimo - iPrimeiro > linhas then 
                     iPrimeiro = iPrimeiro + 1
                     saida[iPrimeiro] = nil
                     precocorrente[iPrimeiro]=nil
                 end
+
+                addQuantidadeNoPreco(v.preco, v.qte, v.negocio)
+                addQuantidadePorAgressor(v.idc, v.qte, v.negocio)
             end
             lista = nil
     end
-   local x = 490
+
+    if negocios_oo ~= nil and isNegocio==2 and #negocios_oo > 1000 then 
+        negocios_oo = {}
+    end
+
+    local x = 490
    
 
- if suit.Button("Sair", x,70, 200,30,{id=1}).hit then
+    if suit.Button("Sair", x,70, 200,30,{id=1}).hit then
       if placartemp[#placartemp] ~= nil then 
         addPlacar(placar, placartemp[#placartemp].dia, placartemp[#placartemp].operacoes, placartemp[#placartemp].posicao)
         salvarPlacar()
@@ -156,6 +159,8 @@ function rodarJogo()
             tipocontrato='WDO'
         end   
    end
+   -- TODO Alterar o comportamento dos botoes
+   --      Se comprar (desabilita a possibilidade de comprar mais), habilita somente a venda e vice-versa
    if suit.Button("COMPRAR", x,370, 100,30,{id=3}).hit then
         if estaAberta and operacao ~= 1 then 
             posicao = posicao + posicaotemp
@@ -222,6 +227,10 @@ function love.keypressed(key)
         love.event.quit()
     elseif key=='z' then 
         zerarPlacar()
+    elseif key=='t' then 
+        isNegocio = 1
+    elseif key=='o' then 
+        isNegocio = 2
     elseif key=='r' then 
         if angulo < 0 then 
             angulo = 0
@@ -237,7 +246,7 @@ function love.draw()
         love.graphics.print("NAO CONSEGUI CARREGAR",20,20)
     end
     if tela==1 then 
-        telaCenario()
+        telaNegocios()
     elseif tela==2 then 
         telaConfiguracao()
     elseif tela==3 then 

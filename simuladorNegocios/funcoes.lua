@@ -83,8 +83,86 @@ function carregarRecursos()
     numeroOperacoes=0
     placar={}
     placartemp={}
+    
+    --indicadores maximo, minimo, abertura, fechamento, vwap
+    maximo = 0
+    minimo = 0
+    --estruturas telas auxiliares
+    negocios_oo = {}
+    qte_no_preco = {}
+    qte_por_agressor = {}
+
+    isNegocio = 2
+
+    print('iniciado')
+    
     carregarPlacar()
 end
+-- para gerar a saida dos negocios ordem original
+function agruparNegocioOO(lista)
+   if lista ~= nil then 
+        for i,v in ipairs(lista) do 
+            local chave = tostring(v.data).."_"..tostring(v.preco).."_"..tostring(v.idc).."_"..tostring(v.negocio)
+            if negocios_oo[chave] ~= nil then 
+                negocios_oo[chave].qte = negocios_oo[chave].qte + v.qte
+            else   
+                local t = {}  
+                t.qte = v.qte
+                t.preco =  v.preco
+                t.idc =  v.idc
+                t.data =  v.data
+                t.negocio =  v.negocio
+                negocios_oo[chave] = t
+            end
+        end
+   end
+   --print('imprimindo saida oo')
+   --for i,v in pairs(negocios_oo) do
+   --     print(i, v.qte)
+   --end
+end
+-- para fazer o dom
+function addQuantidadeNoPreco(preco, quantidade, negocio)
+    --print(preco, quantidade, negocio)
+    if qte_no_preco[preco] ~= nil then
+        if negocio == 1 then 
+            qte_no_preco[preco].qtecompra = qte_no_preco[preco].qtecompra + quantidade
+        elseif  negocio == 2 then 
+            qte_no_preco[preco].qtevenda = qte_no_preco[preco].qtevenda + quantidade
+        end
+    else 
+        local t = {}
+        if negocio == 1 then
+            t.qtecompra = quantidade    
+            t.qtevenda = 0
+        elseif negocio == 2 then 
+            t.qtecompra = 0
+            t.qtevenda = quantidade                
+        end
+        qte_no_preco[preco] = t
+    end
+end
+-- para fazer a tela de agressores por quantidade de contratos
+function addQuantidadePorAgressor(agressor, quantidade, negocio)
+    if qte_por_agressor[agressor] ~= nil then
+        if negocio == 1 then 
+            qte_por_agressor[agressor].qtecompra = qte_por_agressor[agressor].qtecompra + quantidade
+        elseif  negocio == 2 then 
+            qte_por_agressor[agressor].qtevenda = qte_por_agressor[agressor].qtevenda - quantidade
+        end
+    else 
+        local t = {}
+        if negocio == 1 then
+            t.qtecompra = 0 + quantidade    
+            t.qtevenda = 0
+        elseif negocio == 2 then 
+            t.qtecompra = 0
+            t.qtevenda = 0 - quantidade                 
+        end
+        qte_por_agressor[agressor] = t
+    end
+end
+
 
 function addPlacar(_placar, _dia, _operacoes, _posicao)
     local t = {}
