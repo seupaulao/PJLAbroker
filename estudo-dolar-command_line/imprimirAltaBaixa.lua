@@ -153,16 +153,10 @@ function vetorBarraPreco(precos, item, tipo)
         end
     elseif tipo == 'h' then 
         local inicio = buscarPosicaoPreco(precos, item.high)
-        --local fim = buscarPosicaoPreco(precos, item.low)
-	--for i=inicio,inicio do
         barra[inicio]='*'
-        --end    
     elseif tipo == 'l' then 
         local inicio = buscarPosicaoPreco(precos, item.low)
-        --local fim = buscarPosicaoPreco(precos, item.low)
-        --for i=inicio,inicio do
         barra[inicio]='*'
-        --end    
     end
 return barra
 end
@@ -177,7 +171,26 @@ function printVetor(vetor)
     for i=1,#vetor do print(vetor[i]) end
 end
 
-function imprimirMatriz(amostra, precos,tipo)
+function pertence(preco, vetor)
+   if vetor == nil then 
+      return false
+   end
+   for i=1,#vetor do 
+      if vetor[i] == preco then
+         return true
+      end   
+   end
+   return false
+end
+
+function ehSimbolo(simbolo)
+   if simbolo == '*' or simbolo=='v' or simbolo=='c' then 
+      return true
+   end
+   return false
+end
+
+function imprimirMatriz(amostra, precos, tipo, chaves)
     local matriz = zerarMatriz(amostra, precos)
     for j=1,#amostra do 
         local barra = vetorBarraPreco(precos, amostra[j],tipo)
@@ -188,13 +201,26 @@ function imprimirMatriz(amostra, precos,tipo)
     for i=1,#precos do 
         local s = precos[i]..' '
         for j=1,#amostra do 
-            s = s..matriz[i][j]
+            if pertence(precos[i], chaves) and chaves ~= nil and not ehSimbolo(matriz[i][j])then 
+                s = s..'-'
+            else 
+               s = s..matriz[i][j]
+            end
         end
         print(s)
     end
 end
 
-n = 140
+n = 100    
+
+function procurar(dados, data)
+    for i=1,#dados do
+        if dados[i].data == data then 
+            return i
+        end      
+    end
+    return -1
+end
 
 function loop()
     local op = ''
@@ -203,14 +229,15 @@ function loop()
     local ini = 1
     local fim = n
     local tipografico = 'a' --a - alta e baixa; c - candle; h - só linha de alta; l - só linha de baixa
+    local marcas = {}
     while op ~= 'q' do 
-	op = nil    
+	    op = nil    
         local amostra = separarAmostra(dados,ini,fim)
         local vetorPreco = construirVetorPreco(amostra)
         print(amostra[1].data,amostra[1].hora,amostra[#amostra].hora)
-        imprimirMatriz(amostra, vetorPreco,tipografico)
+        imprimirMatriz(amostra, vetorPreco,tipografico,marcas)
         print('z - reset; a - pagina anterior; d - proxima pagina; c - candle; h - high line; l - low line; i - high/close; q - sair; ')
-	print('g - ir para; x - regua; n - alterar numero velas; comando + [ENTER]')
+	    print('g - ir para; x - regua; n - aumentar numero velas; m - diminuir numero velas; r - marcar região; f - desmarcar ultima região; v - desmarcar região \n comando + [ENTER]')
         op=io.read()
         if op == 'd' or op == '' or op==' ' or op==nil then 
             ini = ini + n 
@@ -233,39 +260,52 @@ function loop()
         elseif op == 'l' then 
             tipografico = 'l'
         elseif op == 'i' then
-	    tipografico='a'	
+    	    tipografico='a'	
         elseif op == 'n' then
-            print('Numero de Velas == '..tostring(n)..' Quantas vc deseja?')
-	    n = tonumber(io.read())
-	    ini = 1
-	    fim = n
+            n = n + 1
+            --ini = 1
+            fim = ini + n
+        elseif op == 'm' then
+            n = n - 1
+            --ini = 1
+            fim = ini + n
         elseif op == 'z' then 
             tipografico = 'a'
             ini=1
-            fim=n
+            fim= ini + n
         elseif op == 'x' then
             print('Numero A: ')
-	    local a = tonumber(io.read())
-	    print('Numero B: ')
-	    local b = tonumber(io.read())
-	    print('A-B = ',tostring(a-b))
+	        local a = tonumber(io.read())
+	        print('Numero B: ')
+	        local b = tonumber(io.read())
+	        print('A-B = ',tostring(a-b))
         elseif op == 'g' then
-	    print('Ir para qual data?')
-	    local data = io.read()
-	    local b = false
-	    for i=1,#dados do
-		if dados[i].data == data then 
-		   ini = i
-		   fim = ini + n
-		   b = true
-		   break
-	        end      
-	    end
-	    if not b then 
-	       print('NAO ENCONTRADO')
-	    end   
+            print('Ir para qual data?')
+            local data = io.read()
+            local b = procurar(dados, data)
+            if b > 0 then
+                ini = b
+                fim = ini + n
+            else    
+                print('NAO ENCONTRADO')
+            end    
+        elseif op == 'r' then
+            print('Qual a região de preço? ')
+            local pr = io.read()
+            table.insert(marcas, tonumber(pr))     
+        elseif op == 'f' then
+            table.remove(marcas)     
+        elseif op == 'v' then
+            print('Qual a região de preço a remover? ')
+            local pr = io.read()
+            for i=1,#marcas do 
+                if marcas[i]==tonumber(pr) then 
+                    table.remove(marcas, i)
+                    break
+                end
+            end             
         end
-    end    
+end    
 end
 
 loop()

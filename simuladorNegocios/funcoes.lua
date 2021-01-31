@@ -89,6 +89,7 @@ function carregarRecursos()
     minimo = 0
     --estruturas telas auxiliares
     negocios_oo = {}
+    negocios_oo_ix = {}
     qte_no_preco = {}
     qte_por_agressor = {}
 
@@ -113,12 +114,13 @@ function agruparNegocioOO(lista)
                 t.data =  v.data
                 t.negocio =  v.negocio
                 negocios_oo[chave] = t
+                negocios_oo_ix[#negocios_oo_ix+1] = chave
             end
         end
    end
    --print('imprimindo saida oo')
-   --for i,v in pairs(negocios_oo) do
-   --     print(i, v.qte)
+   --for i,v in pairs(negocios_oo_ix) do
+   --     print(i, negocios_oo[v].data, negocios_oo[v].preco, negocios_oo[v].idc, negocios_oo[v].negocio,negocios_oo[v].qte)
    --end
 end
 -- para fazer o dom

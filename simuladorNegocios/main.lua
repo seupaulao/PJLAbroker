@@ -137,6 +137,7 @@ function rodarJogo()
 
     if negocios_oo ~= nil and isNegocio==2 and #negocios_oo > 1000 then 
         negocios_oo = {}
+        negocios_oo_ix = {}
     end
 
     local x = 490
