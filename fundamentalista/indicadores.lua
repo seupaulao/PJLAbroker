@@ -17,9 +17,9 @@ end
 
 function mercado()
 	cotacao = 20.0
-        acoes=10000
 	valor_mercado = 200000
 	valor_firma = 150000
+    acoes = 10000 -- valor_mercado / cotacao
 end
 
 function indicadores()
@@ -54,6 +54,12 @@ function indicadores()
 	GIRO_ESTOQUE = custo_mercadorias_vendidas / estoque
 	D_B = divida_bruta / patrimonio_liquido
 	DIVIDEND_YIELD = (dividendo / cotacao) * 100
+	if DIVIDEND_YIELD > 6 then 
+		print('comprar')
+	end
+	dividendo = DIVIDEND_YIELD / 100 * cotacao
+	-- MGLU3 -> 0.2 / 100 * 25.27 = 
+
 	EV_EBIT = valor_firma / ebit
 	CRESC_RECEITA_5A = 999
 	PAYOUT = ((lucro_liquido - divida_liquida) / lucro_liquido) * 100

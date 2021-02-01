@@ -47,6 +47,11 @@ for i,dado in ipairs(dados) do
     if tonumber(dado.operacao)==tonumber(2) then ope = 'VENDEDOR' end
     if tonumber(dado.operacao)==tonumber(3) then ope = 'DIRETO' end
     if tonumber(dado.operacao)==tonumber(4) then ope = 'LEILÃO' end
-    print(dado.timestamp,dado.quantidade, dado.preco, ope)
-    if i%10==0 then io.read() end
+    print(dado.timestamp,dado.quantidade, dado.preco, dado.comprador, dado.vendedor, ope)
+    if i%10==0 then 
+        local b = io.read() 
+        if b == 'q' then
+            break
+        end
+    end
 end

@@ -14,6 +14,45 @@ function lines_from(file)
     return lines
 end
 
+function separarDadosNegocio(linhas)
+    local dados={}
+    for i=1,#linhas do 
+        local lin = linhas[i]
+        local t = {}
+        if lin ~= nil then
+            t.id=string.sub(lin,1,string.find(lin,";")-1)
+            lin=string.sub(lin,string.find(lin,";")+1)
+            t.preco=string.sub(lin,1,string.find(lin,";")-1)
+            lin=string.sub(lin,string.find(lin,";")+1)
+            t.quantidade=string.sub(lin,1,string.find(lin,";")-1)
+            lin=string.sub(lin,string.find(lin,";")+1)
+            t.timestamp=string.sub(lin,1,string.find(lin,";")-1)
+            lin=string.sub(lin,string.find(lin,";")+1)
+            t.comprador=string.sub(lin,1,string.find(lin,";")-1)
+            lin=string.sub(lin,string.find(lin,";")+1)
+            t.vendedor=string.sub(lin,1,string.find(lin,";")-1)
+            lin=string.sub(lin,string.find(lin,";")+1)
+            t.operacao=lin
+            dados[#dados+1]=t
+        end
+    end
+    return dados
+end
+
+function imprimirNegocio(hora)
+    local linhas = lines_from('_negocios')
+    local dados = separarDadosNegocio(linhas)
+    for i,dado in ipairs(dados) do
+        local ope = 'leilão'
+        if tonumber(dado.operacao)==tonumber(1) then ope = 'COMPRADOR' end
+        if tonumber(dado.operacao)==tonumber(2) then ope = 'VENDEDOR' end
+        if tonumber(dado.operacao)==tonumber(3) then ope = 'DIRETO' end
+        if tonumber(dado.operacao)==tonumber(4) then ope = 'LEILÃO' end
+        if hora == dado.timestamp then 
+            print(dado.timestamp,dado.quantidade, dado.preco, dado.comprador, dado.vendedor, ope)
+        end    
+    end
+end
 
 function separarDados(linhas)
     local dados={}
@@ -237,7 +276,8 @@ function loop()
         print(amostra[1].data,amostra[1].hora,amostra[#amostra].hora)
         imprimirMatriz(amostra, vetorPreco,tipografico,marcas)
         print('z - reset; a - pagina anterior; d - proxima pagina; c - candle; h - high line; l - low line; i - high/close; q - sair; ')
-	    print('g - ir para; x - regua; n - aumentar numero velas; m - diminuir numero velas; r - marcar região; f - desmarcar ultima região; v - desmarcar região \n comando + [ENTER]')
+        print('g - ir para; x - regua; n - aumentar numero velas; m - diminuir numero velas; r - marcar região; ')
+        print('f - desmarcar ultima região; v - desmarcar região; o - imprimir negocios ultima hora; $> comando + [ENTER]')
         op=io.read()
         if op == 'd' or op == '' or op==' ' or op==nil then 
             ini = ini + n 
