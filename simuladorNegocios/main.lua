@@ -107,7 +107,6 @@ function rodarJogo()
         lista = puxarSaida(teste)
     end
     
-    agruparNegocioOO(lista)
 
     if lista ~= nil then
             for i,v in ipairs(lista) do                 
@@ -135,10 +134,6 @@ function rodarJogo()
             lista = nil
     end
 
-    if negocios_oo ~= nil and isNegocio==2 and #negocios_oo > 1000 then 
-        negocios_oo = {}
-        negocios_oo_ix = {}
-    end
 
     local x = 490
    

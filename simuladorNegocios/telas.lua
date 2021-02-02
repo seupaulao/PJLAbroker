@@ -142,41 +142,21 @@ function telaIndicadores()
     -- maximo
     -- minimo
     -- abertura
-    -- fechamento
-    -- vwap
-    -- preco medio
+    -- preço atual
 end
 
-function telaCandles()
-    -- 4. criar tela que exiba o grafico candles simplificado : *, v, c - conforme outro servico do broker (imprimirAltaBaixa.lua)
-    
-end
-
-function telaPosicaoAtual()
-    -- separar a tela de resultado / posicao da configuracao
-    --       1.  em pontos
-    --       2.  quantide de operacoes
-    --       3.  em valor
-end
-
-function telaPrincipaisAgressores()
-    -- 2. criar estrutura que mostre os 10 maiores vendedores e compradores e sua quantidade de lotes
-    --    Se estiver comprando fica com valores positivos e verdes
-    --    Se estiver vendendo  fica com valores negativos e vermelhos   
-    --    Logo um lado estara verde e o outro vermelho
-    
-end
-
-function telaNegociosOrdemOriginal()
-    -- 1. criar estrutura que mostre a quantidade agrupada por:tempo, agressor, valor : essa  eh a ordem original
-    
-end
 
 function telaNegocios()
     --tela de cenario atual (apenas os negocios sem filtro)
     local x = 490
     local y = 425
     local c = 1
+    local i = 1
+    for k,v in pairs(qte_por_agressor) do 
+        print(i, nomecorretoras[k], v.qte)
+        i = i + 1
+    end
+
     love.graphics.translate(width/2, height/2)
 	love.graphics.rotate(angulo)
     love.graphics.translate(-width/2, -height/2)
@@ -219,6 +199,9 @@ function telaNegocios()
         love.graphics.setColor(1,0,0)
         love.graphics.print("Posicao : VENDA", x, 240)
     end 
+    local t, min, max = tamanhoDicionario(qte_no_preco)
+    love.graphics.print("Pts: "..tostring(t),x, 320)
+    love.graphics.print("Min: "..tostring(min).." Max: "..tostring(max),x, 340)
     if iUltimo > 0 then 
         for i=iUltimo,iPrimeiro,-1 do
             if saida[i] ~= nil then

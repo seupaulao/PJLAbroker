@@ -84,12 +84,7 @@ function carregarRecursos()
     placar={}
     placartemp={}
     
-    --indicadores maximo, minimo, abertura, fechamento, vwap
-    maximo = 0
-    minimo = 0
     --estruturas telas auxiliares
-    negocios_oo = {}
-    negocios_oo_ix = {}
     qte_no_preco = {}
     qte_por_agressor = {}
 
@@ -99,33 +94,10 @@ function carregarRecursos()
     
     carregarPlacar()
 end
--- para gerar a saida dos negocios ordem original
-function agruparNegocioOO(lista)
-   if lista ~= nil then 
-        for i,v in ipairs(lista) do 
-            local chave = tostring(v.data).."_"..tostring(v.preco).."_"..tostring(v.idc).."_"..tostring(v.negocio)
-            if negocios_oo[chave] ~= nil then 
-                negocios_oo[chave].qte = negocios_oo[chave].qte + v.qte
-            else   
-                local t = {}  
-                t.qte = v.qte
-                t.preco =  v.preco
-                t.idc =  v.idc
-                t.data =  v.data
-                t.negocio =  v.negocio
-                negocios_oo[chave] = t
-                negocios_oo_ix[#negocios_oo_ix+1] = chave
-            end
-        end
-   end
-   --print('imprimindo saida oo')
-   --for i,v in pairs(negocios_oo_ix) do
-   --     print(i, negocios_oo[v].data, negocios_oo[v].preco, negocios_oo[v].idc, negocios_oo[v].negocio,negocios_oo[v].qte)
-   --end
-end
+
 -- para fazer o dom
 function addQuantidadeNoPreco(preco, quantidade, negocio)
-    --print(preco, quantidade, negocio)
+    print(preco, quantidade, negocio)
     if qte_no_preco[preco] ~= nil then
         if negocio == 1 then 
             qte_no_preco[preco].qtecompra = qte_no_preco[preco].qtecompra + quantidade
@@ -144,27 +116,25 @@ function addQuantidadeNoPreco(preco, quantidade, negocio)
         qte_no_preco[preco] = t
     end
 end
+
 -- para fazer a tela de agressores por quantidade de contratos
 function addQuantidadePorAgressor(agressor, quantidade, negocio)
     if qte_por_agressor[agressor] ~= nil then
         if negocio == 1 then 
-            qte_por_agressor[agressor].qtecompra = qte_por_agressor[agressor].qtecompra + quantidade
+            qte_por_agressor[agressor].qte = qte_por_agressor[agressor].qte + quantidade
         elseif  negocio == 2 then 
-            qte_por_agressor[agressor].qtevenda = qte_por_agressor[agressor].qtevenda - quantidade
+            qte_por_agressor[agressor].qte = qte_por_agressor[agressor].qte - quantidade
         end
     else 
         local t = {}
         if negocio == 1 then
-            t.qtecompra = 0 + quantidade    
-            t.qtevenda = 0
+            t.qte = quantidade    
         elseif negocio == 2 then 
-            t.qtecompra = 0
-            t.qtevenda = 0 - quantidade                 
+            t.qte = 0 - quantidade                 
         end
         qte_por_agressor[agressor] = t
     end
 end
-
 
 function addPlacar(_placar, _dia, _operacoes, _posicao)
     local t = {}
@@ -301,6 +271,8 @@ function iniciar()
     numeroOperacoes=0
     posicao=0
     posicaotemp=0
+    qte_no_preco = {}
+    qte_por_agressor = {}
 end
 
 function carregarDolar()
@@ -365,6 +337,21 @@ end
 function formataHora(dh)
     return dh:sub(1,2)..':'..dh:sub(3,4)..':'..dh:sub(5,6)
 end
+
+--retorna: 
+--1. o tamanho do dicionario,
+--2. o menor valor da chave (preço minimo)
+--3. o maior valor da chave (preço maximo)
+function tamanhoDicionario(di)
+    local n = 0
+    local p = {}
+    for k,v in pairs(di) do
+       n = n + 1
+       p[#p + 1] = k
+    end
+    table.sort(p)
+    return n, p[1], p[#p]
+ end
  
 --********PROBLEMA ENCONTRADO PARA ANDROID/LOVE**********
 --Não consigo colocar em modo retrato
