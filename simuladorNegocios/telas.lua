@@ -117,7 +117,7 @@ function telaConfiguracao()
    love.graphics.setColor(1,0,1) 
    love.graphics.print("Configuracao",300,30)
    love.graphics.print("Contratos     : "..tostring(numcontratos),100,60)
-   love.graphics.print("Cenario       : "..tostring(arquivos[numarquivo]),100,120)
+   love.graphics.print("Cenario       : "..tostring(getArquivo(numarquivo)),100,120)
    love.graphics.print("Hora    Inicio: "..tostring(hini),100,180)
    love.graphics.print("Minuto  Inicio: "..tostring(mini),100,240)
 end
@@ -138,22 +138,14 @@ function telaDOM()
 
 end
 
-function telaIndicadores()
-    -- maximo
-    -- minimo
-    -- abertura
-    -- preço atual
-end
-
-
 function telaNegocios()
     --tela de cenario atual (apenas os negocios sem filtro)
     local x = 490
-    local y = 425
+    local y = 400
     local c = 1
     local i = 1
     for k,v in pairs(qte_por_agressor) do 
-        print(i, nomecorretoras[k], v.qte)
+        print(i, getNomeCorretora(k), v.qte)
         i = i + 1
     end
 
@@ -170,7 +162,7 @@ function telaNegocios()
 
 
     love.graphics.setColor(1,1,1)  
-    love.graphics.print("Dia  : "..tostring(arquivos[numarquivo]), x, 160)
+    love.graphics.print("Dia  : "..tostring(getArquivo(numarquivo)), x, 160)
     love.graphics.print("Contrato  : "..tostring(tipocontrato), x, 180)
     if posicao > 0 then 
         love.graphics.setColor(0,1,0)

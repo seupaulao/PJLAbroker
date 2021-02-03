@@ -37,26 +37,26 @@ end
     --8. carregar mais historicos de negocio de outros dias
 
 function love.update(dt)
-    if tela==0 then
+    if tela.get()==0 then
         rodarInicio()
-    elseif tela==1 then
+    elseif tela.get()==1 then
         rodarJogo()
-    elseif tela==2 then
+    elseif tela.get()==2 then
         rodarConfiguracao()    
-    elseif tela==3 then
+    elseif tela.get()==3 then
         rodarResultado()    
     end
 end
 
 function rodarInicio()
     if suit.Button("JOGAR", 250,220, 200,30,{id=1}).hit then
-        tela = 2
+        tela.set(2)
     end
 end
 
 function rodarResultado()
     if suit.Button("Ir para Inicio",250,120, 200,30,{id=1}).hit then
-        tela=0
+        tela.set(0)
     end
 end
 
@@ -146,7 +146,7 @@ function rodarJogo()
       placartemp={}
       estrutura={}
       saida={}
-      tela=3
+      tela.set(3)
    end
    if suit.Button("Alternar Contrato", x,120, 200,30,{id=2}).hit then
         if tipocontrato=='WDO' then 
@@ -241,13 +241,13 @@ function love.draw()
     if mostrarMsg then 
         love.graphics.print("NAO CONSEGUI CARREGAR",20,20)
     end
-    if tela==1 then 
+    if tela.get()==1 then 
         telaNegocios()
-    elseif tela==2 then 
+    elseif tela.get()==2 then 
         telaConfiguracao()
-    elseif tela==3 then 
+    elseif tela.get()==3 then 
         telaPlacar()
-    elseif tela==0 then
+    elseif tela.get()==0 then
         telaInicial()        
     end
     suit.draw()
