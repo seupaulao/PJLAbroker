@@ -2,6 +2,7 @@
 lume = require "lume"
 local variavel=require 'variavel'
 
+
 function carregarRecursos()
     tempotextob = "Tempo"
     contador=0
@@ -46,11 +47,6 @@ function carregarRecursos()
     isNegocio = 2
 
     --print('iniciado')
-    --baby = variavel.fn(12)
-    --print("Valor variavel", baby.get())
-    --baby.set(25)
-    --print("Valor variavel", baby.get())
-
     carregarPlacar()
 end
 
@@ -116,6 +112,7 @@ function salvarPlacar()
 end
 
 function carregarPlacar()
+
     if love.filesystem.getInfo("saveplacar.txt") then
         local file = love.filesystem.read("saveplacar.txt")
         local data = lume.deserialize(file)
