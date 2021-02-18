@@ -1,7 +1,30 @@
 
 lume = require "lume"
 local variavel=require 'variavel'
-
+require '20191104'
+require '20191126'
+require '20200107'
+require '20200108'
+require '20200121'
+require '20200218'
+require '20200311'
+require '20200324'
+require '20200414'
+require '20200429'
+require '20200527'
+require '20200615'
+require '20200616'
+require '20200617'
+require '20200623'
+require '20200713'
+require '20200727'
+require '20200728'
+require '20200729'
+require '20200803'
+require '20200805'
+require '20200812'
+require '20200817'
+require '20200819'
 
 function carregarRecursos()
     tempotextob = "Tempo"
@@ -32,6 +55,7 @@ function carregarRecursos()
     posicao = 0
     posicaotemp = 0
     precocorrente={}
+    preco_corrente_negociado = 0
     mostrarMsg=false
     numcontratos=1
     tela = variavel.fn(0)
@@ -43,6 +67,8 @@ function carregarRecursos()
     --estruturas telas auxiliares
     qte_no_preco = {}
     qte_por_agressor = {}
+    ob_agrupar={}
+    ix_agrupar={}
 
     isNegocio = 2
 
@@ -50,9 +76,22 @@ function carregarRecursos()
     carregarPlacar()
 end
 
+function addAgrupar(hora, agr, preco, qte, neg)
+   ch=tostring(hor)..'_'..tostring(agr)..'_'..tostring(preco)..'_'..tostring(neg)
+   if ob_agrupar[ch] ~= nil then
+      ob_agrupar[ch].qte = ob_agrupar[ch].qte + qte 
+   else
+      t={}
+      t.qte = qte
+      t.neg = neg
+      t.preco = preco
+      ob_agrupar[ch] = t
+      ix_agrupar[#ix_agrupar+1] = ch
+   end
+end
 -- para fazer o dom
 function addQuantidadeNoPreco(preco, quantidade, negocio)
-    print(preco, quantidade, negocio)
+    --print(preco, quantidade, negocio)
     if qte_no_preco[preco] ~= nil then
         if negocio == 1 then 
             qte_no_preco[preco].qtecompra = qte_no_preco[preco].qtecompra + quantidade
@@ -348,6 +387,15 @@ function tamanhoDicionario(di)
     return n, p[1], p[#p]
  end
 
+ function ordenaPorPreco(v)
+    local p = {}
+    for k,v in pairs(v) do 
+        p[#p+1]=k
+    end
+    table.sort(p)
+    return p    
+ end
+
  function getArquivo(num)
     local arquivos={
         '20191104', '20191126', '20200107', '20200108',
@@ -359,6 +407,39 @@ function tamanhoDicionario(di)
             }
     return arquivos[num]        
  end
+
+ function qte2String(_numero)
+    local op = ""  
+    local qu = -1
+    local _x = math.abs(_numero)
+    if _x >= 1000000000 then 
+       op = "B"
+       qu = _numero / 1000000000
+    elseif _x >= 1000000 and _x < 1000000000 then 
+       op = "M"
+       qu = _numero / 1000000
+    elseif _x >= 1000 and _x < 1000000 then
+       op = "K"
+       qu = _x / 1000
+    elseif _x < 1000 then 
+       qu = _numero   
+    end
+    if qu == 0 then
+       return "0"
+    end   
+    --certificar-se que so pode ter ate 2 casas decimais
+    if op ~="" then 
+        local a = tostring(qu)
+        if a:len() >=4  then 
+            local ss = a:sub(1,1)..'.'..a:sub(3,4)
+            return ss:sub(1,4)..op
+        else
+            return a  
+        end
+    else 
+        return _numero 
+    end
+  end
  
 --********PROBLEMA ENCONTRADO PARA ANDROID/LOVE**********
 --Não consigo colocar em modo retrato

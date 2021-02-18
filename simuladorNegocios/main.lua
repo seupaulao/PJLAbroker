@@ -1,32 +1,6 @@
 require "funcoes"
 require "telas"
 
-require '20191104'
-require '20191126'
-require '20200107'
-require '20200108'
-require '20200121'
-require '20200218'
-require '20200311'
-require '20200324'
-require '20200414'
-require '20200429'
-require '20200527'
-require '20200615'
-require '20200616'
-require '20200617'
-require '20200623'
-require '20200713'
-require '20200727'
-require '20200728'
-require '20200729'
-require '20200803'
-require '20200805'
-require '20200812'
-require '20200817'
-require '20200819'
-
-
 function love.load()
     socket = require("socket")
     suit = require 'suit'
@@ -39,7 +13,7 @@ end
 function love.update(dt)
     if tela.get()==0 then
         rodarInicio()
-    elseif tela.get()==1 then
+    elseif tela.get()==1 or tela.get()==4 then
         rodarJogo()
     elseif tela.get()==2 then
         rodarConfiguracao()    
@@ -121,6 +95,7 @@ function rodarJogo()
                 end
                 
                 precocorrente[iUltimo]=tonumber(v.preco)
+                preco_corrente_negociado=precocorrente[iUltimo]
 
                 if iUltimo - iPrimeiro > linhas then 
                     iPrimeiro = iPrimeiro + 1
@@ -129,7 +104,8 @@ function rodarJogo()
                 end
 
                 addQuantidadeNoPreco(v.preco, v.qte, v.negocio)
-                addQuantidadePorAgressor(v.idc, v.qte, v.negocio)
+               -- addQuantidadePorAgressor(v.idc, v.qte, v.negocio)
+                addAgrupar(v.data, v.idc, v.preco, v.qte, v.negocio)
             end
             lista = nil
     end
@@ -165,7 +141,7 @@ function rodarJogo()
             preco_operacao = 0
             pontos = 0
             numeroOperacoes = numeroOperacoes + 1
-            addPlacar(placartemp, arquivos[numarquivo], numeroOperacoes, posicao)
+            addPlacar(placartemp, getArquivo(numarquivo), numeroOperacoes, posicao)
         else
             estaAberta = true
             operacao = 1 -- 1 = compra, 2 = venda
@@ -182,7 +158,7 @@ function rodarJogo()
             preco_operacao = 0
             pontos = 0
             numeroOperacoes = numeroOperacoes + 1
-            addPlacar(placartemp, arquivos[numarquivo], numeroOperacoes, posicao)
+            addPlacar(placartemp, getArquivo(numarquivo), numeroOperacoes, posicao)
         else
             estaAberta = true
             operacao = 2
@@ -223,10 +199,10 @@ function love.keypressed(key)
         love.event.quit()
     elseif key=='z' then 
         zerarPlacar()
+    elseif key=='d' then 
+        tela.set(4)
     elseif key=='t' then 
-        isNegocio = 1
-    elseif key=='o' then 
-        isNegocio = 2
+        tela.set(1)
     elseif key=='r' then 
         if angulo < 0 then 
             angulo = 0
@@ -247,6 +223,8 @@ function love.draw()
         telaConfiguracao()
     elseif tela.get()==3 then 
         telaPlacar()
+    elseif tela.get()==4 then 
+        telaDOM()
     elseif tela.get()==0 then
         telaInicial()        
     end

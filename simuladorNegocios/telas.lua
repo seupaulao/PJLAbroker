@@ -124,17 +124,84 @@ end
 -- TODO alteracoes:
 
 function telaDOM()
-    -- 3. criar estrutura que mostre as quantidades acumuladas em cada nivel de preco
-    -- barra de precos
-    -- preco atual ao background laranja
-    -- quantidades de compra acumulados por preco do lado esquerdo    
-    -- quantidades de vendas acumulados por preco do lado direito    
+    local x = 490
+    local y = 400
+    local c = 1
+    local i = 1
+    love.graphics.translate(width/2, height/2)
+	love.graphics.rotate(angulo)
+    love.graphics.translate(-width/2, -height/2)
 
-    --colocar controles de compra e venda a mercado
-    --colocar controles de compra e venda a melhor preço (bid e ask)
-    --colocar controles de zerar e inverter
-    --colocar controles de lotes
-    --colocar controle de alternar entre WDO e DOL
+    love.graphics.setColor(1,1,1) 
+    love.graphics.print(tempotextob, x, 40)
+    love.graphics.setColor(1,0,1) 
+    local s = espacos("QTE COMPRA",10)..espacos("PRECO",10)..espacos("QTE VENDA",10)
+    love.graphics.print(s, 80, 40)
+
+    love.graphics.setColor(1,1,1)  
+    love.graphics.print("Dia  : "..tostring(getArquivo(numarquivo)), x, 160)
+    love.graphics.print("Contrato  : "..tostring(tipocontrato), x, 180)
+    if posicao > 0 then 
+        love.graphics.setColor(0,1,0)
+    elseif posicao < 0 then     
+        love.graphics.setColor(1,0,0)
+    elseif posicao == 0 then
+        love.graphics.setColor(1,1,1)        
+    end
+    love.graphics.print("Lucro/Prejuizo  : "..tostring(posicao), x, 200)
+    if posicaotemp > 0 then 
+        love.graphics.setColor(0,1,0)
+    elseif posicaotemp < 0 then     
+        love.graphics.setColor(1,0,0)
+    elseif posicaotemp == 0 then
+        love.graphics.setColor(1,1,1)        
+    end
+    love.graphics.print("Osc prec : "..tostring(posicaotemp), x, 260)
+    love.graphics.setColor(1,1,1)
+    love.graphics.print("Pontos   : "..tostring(pontos), x, 280)
+    love.graphics.print("Ult Preco: "..tostring(preco_operacao), x, 220)
+    love.graphics.print("Operacoes: "..tostring(numeroOperacoes),x, 300)
+    if tonumber(operacao) == 1 then
+        love.graphics.setColor(0,1,0)
+        love.graphics.print("Posicao : COMPRA", x, 240)
+    elseif tonumber(operacao) == 2 then
+        love.graphics.setColor(1,0,0)
+        love.graphics.print("Posicao : VENDA", x, 240)
+    end 
+    local t, min, max = tamanhoDicionario(qte_no_preco)
+    love.graphics.print("Pts: "..tostring(t),x, 320)
+    love.graphics.print("Min: "..tostring(min).." Max: "..tostring(max),x, 340)
+
+    local qnp = ordenaPorPreco(qte_no_preco)
+
+    for i,k in pairs(qnp) do 
+        local str = espacos(qte2String(qte_no_preco[k].qtecompra),10)..espacos(tostring(k),10)..espacos(qte2String(qte_no_preco[k].qtevenda),10)
+        if k == preco_corrente_negociado then 
+            love.graphics.setColor(255/255,153/255,0/255)
+        else
+            love.graphics.setColor(1,1,1)
+        end
+        love.graphics.print(str,80,y-15*c)
+        c = c + 1
+    end
+end
+
+function telaAgressores()
+    local x = 490
+    local y = 400
+    local c = 1
+    local i = 1
+    love.graphics.translate(width/2, height/2)
+	love.graphics.rotate(angulo)
+    love.graphics.translate(-width/2, -height/2)
+
+    love.graphics.setColor(1,1,1) 
+    love.graphics.print(tempotextob, x, 40)
+
+    for k,v in pairs(qte_por_agressor) do 
+        print(i, getNomeCorretora(k), v.qte)
+        i = i + 1
+    end
 
 end
 
@@ -144,10 +211,6 @@ function telaNegocios()
     local y = 400
     local c = 1
     local i = 1
-    for k,v in pairs(qte_por_agressor) do 
-        print(i, getNomeCorretora(k), v.qte)
-        i = i + 1
-    end
 
     love.graphics.translate(width/2, height/2)
 	love.graphics.rotate(angulo)
