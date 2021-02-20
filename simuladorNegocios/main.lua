@@ -148,6 +148,12 @@ function rodarJogo()
             preco_operacao = precocorrente[iUltimo]
             pontos = 0
             posicaotemp = inicieiOperacao()
+
+            preco_operacao_fila.add(preco_operacao)
+            pontos_fila.add(pontos)
+            posicaotemp_fila.add(posicaotemp)
+
+
         end
    end
    if suit.Button("VENDER", x+110,370, 100,30,{id=4}).hit then
@@ -165,6 +171,11 @@ function rodarJogo()
             preco_operacao = precocorrente[iUltimo]
             pontos = 0
             posicaotemp = inicieiOperacao()
+
+            preco_operacao_fila.add(preco_operacao)
+            pontos_fila.add(pontos)
+            posicaotemp_fila.add(posicaotemp)
+
         end
    end
     if estaAberta and operacao == 1 then 
@@ -173,7 +184,18 @@ function rodarJogo()
     if estaAberta and operacao == 2 then 
         pontos = preco_operacao - precocorrente[iUltimo]
     end    
+    
     posicaotemp = calcularPosicaoTemp(pontos)
+
+    for i,v in ipairs(preco_operacao_fila.getAll()) do
+        if estaAberta and operacao == 1 then 
+            pontos_fila.set(i, precocorrente[iUltimo] - preco_operacao_fila.get(i))
+        end    
+        if estaAberta and operacao == 2 then 
+            pontos_fila.set(i, preco_operacao_fila.get(i) - precocorrente[iUltimo])
+        end    
+        posicaotemp_fila.set(i, calcularPosicaoTemp(pontos_fila.get(i)))            
+    end
 
 end
 

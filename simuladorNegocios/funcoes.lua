@@ -47,15 +47,21 @@ function carregarRecursos()
     height = love.graphics.getHeight()
     angulo = 0
     --operacional
-    pontos = 0 
-    preco_operacao = 0
     tipocontrato='WDO'
     operacao = nil
     estaAberta=false
+    
+    pontos = 0 
+    preco_operacao = 0
     posicao = 0
     posicaotemp = 0
     precocorrente={}
     preco_corrente_negociado = 0
+
+    pontos_fila = variavel.fila()
+    preco_operacao_fila = variavel.fila()
+    posicaotemp_fila = variavel.fila()
+
     mostrarMsg=false
     numcontratos=1
     tela = variavel.fn(0)
