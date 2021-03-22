@@ -132,71 +132,69 @@ function rodarJogo()
         end   
    end
    -- TODO Alterar o comportamento dos botoes
-   --      Se comprar (desabilita a possibilidade de comprar mais), habilita somente a venda e vice-versa
+   --      fazer fila para multiplas entradas
+   --      criar saida baseada no preço médio das multiplas entradas
+   --      fechar as posições começando da primeira aberta
    if suit.Button("COMPRAR", x,370, 100,30,{id=3}).hit then
-        if estaAberta and operacao ~= 1 then 
-            posicao = posicao + posicaotemp
-            estaAberta = false
-            operacao = nil
-            preco_operacao = 0
-            pontos = 0
-            numeroOperacoes = numeroOperacoes + 1
-            addPlacar(placartemp, getArquivo(numarquivo), numeroOperacoes, posicao)
-        else
-            estaAberta = true
-            operacao = 1 -- 1 = compra, 2 = venda
-            preco_operacao = precocorrente[iUltimo]
-            pontos = 0
-            posicaotemp = inicieiOperacao()
-
-            preco_operacao_fila.add(preco_operacao)
-            pontos_fila.add(pontos)
-            posicaotemp_fila.add(posicaotemp)
-
-
+        --TODO
+        --1. buscar venda
+        local index = buscarVenda()
+        --2. se nao encontrar venda entao adiciona compra
+        if index < 0 then 
+            compravenda.add(precocorrente[iUltimo], 1, true, posicaotemp, inicieiOperacao())
+        else    
+            --3. se encontrar venda entao processa a primeira venda encontrada
+            processarCompraVenda()
         end
    end
    if suit.Button("VENDER", x+110,370, 100,30,{id=4}).hit then
-        if estaAberta and operacao ~= 2 then 
-            posicao = posicao + posicaotemp
-            estaAberta = false
-            operacao = nil
-            preco_operacao = 0
-            pontos = 0
-            numeroOperacoes = numeroOperacoes + 1
-            addPlacar(placartemp, getArquivo(numarquivo), numeroOperacoes, posicao)
-        else
-            estaAberta = true
-            operacao = 2
-            preco_operacao = precocorrente[iUltimo]
-            pontos = 0
-            posicaotemp = inicieiOperacao()
-
-            preco_operacao_fila.add(preco_operacao)
-            pontos_fila.add(pontos)
-            posicaotemp_fila.add(posicaotemp)
-
+        local index = buscarCompra()
+        if index < 0 then 
+            compravenda.add(precocorrente[iUltimo], 2, true, posicaotemp, inicieiOperacao())
+        else    
+            processarCompraVenda()
         end
    end
-    if estaAberta and operacao == 1 then 
-        pontos = precocorrente[iUltimo] - preco_operacao
-    end    
-    if estaAberta and operacao == 2 then 
-        pontos = preco_operacao - precocorrente[iUltimo]
-    end    
-    
-    posicaotemp = calcularPosicaoTemp(pontos)
 
-    for i,v in ipairs(preco_operacao_fila.getAll()) do
-        if estaAberta and operacao == 1 then 
-            pontos_fila.set(i, precocorrente[iUltimo] - preco_operacao_fila.get(i))
+   atualizarCompraVenda()
+
+end
+
+function atualizarCompraVenda()
+    for i,v in ipairs(compravenda.getAll()) do
+        if compravenda.isAberta(i) and compravenda.isCompra(i) then 
+            compravenda.setPontos(i, precocorrente[iUltimo] - compravenda.getPrecoOperacao(i))
         end    
-        if estaAberta and operacao == 2 then 
-            pontos_fila.set(i, preco_operacao_fila.get(i) - precocorrente[iUltimo])
+        if compravenda.isAberta(i) and compravenda.isVenda(i) then 
+            compravenda.setPontos(i, compravenda.getPrecoOperacao(i) - precocorrente[iUltimo])
         end    
-        posicaotemp_fila.set(i, calcularPosicaoTemp(pontos_fila.get(i)))            
+        compravenda.setPosicaoTemp(i, calcularPosicaoTemp(compravenda.getPontos(i)))            
     end
+end
 
+function processarCompraVenda()
+    posicao = posicao + compravenda.getPosicaoTemp(1)
+    numeroOperacoes = numeroOperacoes + 1
+    compravenda.remove()
+    addPlacar(placartemp, getArquivo(numarquivo), numeroOperacoes, posicao)
+end
+
+function buscarCompra()
+    for i,v in ipairs(compravenda.getAll()) do
+        if compravenda.isAberta(i) and compravenda.isCompra(i) then
+            return i
+        end    
+    end
+    return -1
+end
+
+function buscarVenda()
+    for i,v in ipairs(compravenda.getAll()) do
+        if compravenda.isAberta(i) and compravenda.isVenda(i) then
+            return i
+        end    
+    end
+    return -1
 end
 
 function calcularPosicaoTemp(_pontos)

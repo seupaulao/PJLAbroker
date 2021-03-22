@@ -274,26 +274,47 @@ function loop()
         local amostra = separarAmostra(dados,ini,fim)
         local vetorPreco = construirVetorPreco(amostra)
         print(amostra[1].data,amostra[1].hora,amostra[#amostra].hora)
+	print('m - Exibir Menu; q - sair')
         imprimirMatriz(amostra, vetorPreco,tipografico,marcas)
-        print('z - reset; a - pagina anterior; d - proxima pagina; c - candle; h - high line; l - low line; i - high/close; q - sair; ')
-        print('g - ir para; x - regua; n - aumentar numero velas; m - diminuir numero velas; r - marcar região; ')
-        print('f - desmarcar ultima região; v - desmarcar região; o - imprimir negocios ultima hora; $> comando + [ENTER]')
         op=io.read()
-        if op == 'd' or op == '' or op==' ' or op==nil then 
+        if op == 'e' or op == '' or op==' ' or op==nil then 
             ini = ini + n 
             fim = fim + n
             if fim > #dados then 
                 fim = #dados 
                 ini = fim - n
             end
-        elseif op == 'a' then 
+        elseif op == 'm' then
+            print('z - reset; w - pagina anterior; e - proxima pagina; ')
+	    print('k - grafico candle; h - high line; l - low line; i - grafico high/low;  ')
+            print('g - ir para; x - regua; n - aumentar numero velas; m - diminuir numero velas; ')
+            print('r - marcar região; f - desmarcar ultima região; b - desmarcar região; ')
+	    print('a - diminuir 1 barra; d - aumentar uma barra; c - compra a mercado; v - venda a mercado')
+	    print('$> comando + [ENTER]')
+        elseif op == 'w' then 
             ini = ini - n 
             fim = fim - n
             if ini < 0 then 
                 ini = 1 
                 fim = n
             end
-        elseif op == 'c' then 
+        elseif op == 'c' or op == 'v' then
+ 	    print('EM DESENVOLVIMENTO')	
+        elseif op == 'a' then 
+            ini = ini - 1
+            fim = fim - 1
+            if ini < 0 then 
+                ini = 1 
+                fim = n
+            end
+        elseif op == 'd' then 
+            ini = ini + 1
+            fim = fim + 1
+            if fim > #dados then 
+                fim = #dados 
+                ini = fim - n
+            end
+        elseif op == 'k' then 
             tipografico = 'c'
         elseif op == 'h' then 
             tipografico = 'h'
@@ -335,7 +356,7 @@ function loop()
             table.insert(marcas, tonumber(pr))     
         elseif op == 'f' then
             table.remove(marcas)     
-        elseif op == 'v' then
+        elseif op == 'b' then
             print('Qual a região de preço a remover? ')
             local pr = io.read()
             for i=1,#marcas do 

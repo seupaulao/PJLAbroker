@@ -58,9 +58,7 @@ function carregarRecursos()
     precocorrente={}
     preco_corrente_negociado = 0
 
-    pontos_fila = variavel.fila()
-    preco_operacao_fila = variavel.fila()
-    posicaotemp_fila = variavel.fila()
+    compravenda = variavel.filaC() 
 
     mostrarMsg=false
     numcontratos=1
